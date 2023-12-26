@@ -5,18 +5,29 @@
       <h1>Login</h1>
       <el-card shadow="never" class="login-card">
         <!--Login From-->
-        <el-form>
-          <el-form-item>
-            <el-input placeholder="Please Enter Account Name"></el-input>
+        <el-form ref="form" :model="loginForm" :rules="rules">
+          <el-form-item prop="account">
+            <el-input
+              v-model="loginForm.account"
+              placeholder="Please Enter Account Name"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              v-model="loginForm.password"
+              show-password
+              placeholder="Please Enter Password"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="isAgree">
+            <el-checkbox v-model="loginForm.isAgree"
+              >User Agreement</el-checkbox
+            >
           </el-form-item>
           <el-form-item>
-            <el-input placeholder="Please Enter Password"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-checkbox>User Agreement</el-checkbox>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" style="width: 350px">Login</el-button>
+            <el-button @click="login" type="primary" style="width: 350px"
+              >Login</el-button
+            >
           </el-form-item>
         </el-form>
       </el-card>
@@ -25,8 +36,61 @@
 </template>
 <script>
 export default {
-  name: 'Login'
-}
+  name: "Login",
+  data() {
+    return {
+      loginForm: {
+        account: "",
+        password: "",
+        isAgree: false,
+      },
+      rules: {
+        account: [
+          {
+            required: true,
+            message: "Please Enter Phone Number!",
+            trigger: "blur",
+          },
+          {
+            pattern: /^1[3-9]\d{9}$/,
+            message: "Please Enter Right Format!",
+            trigger: "blur",
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: "Please Enter Password!",
+            trigger: "blur",
+          },
+          {
+            min: 6,
+            max: 16,
+            message: "Password Length should be 6-16",
+            trigger: "blur",
+          },
+        ],
+        isAgree: [
+          {
+            validator: (rule, value, callback) => {
+              value ? callback() : callback(new Error("Please check to agree"));
+            },
+          },
+        ],
+      },
+    };
+  },
+  methods: {
+    // method for login validate
+    login() {
+      this.$refs.form.validate((success) => {
+        if (success) {
+          console.log(11111);
+        }
+      });
+    },
+  },
+};
 </script>
 <style lang="scss">
 .login-container {
@@ -36,7 +100,7 @@ export default {
   .logo {
     flex: 3;
     background: rgba(38, 72, 176) url(../../assets/common/login_back.png)
-    no-repeat center / cover;
+      no-repeat center / cover;
     border-top-right-radius: 60px;
     display: flex;
     flex-direction: column;
@@ -80,7 +144,7 @@ export default {
       }
     }
     .el-checkbox {
-      color:#606266;
+      color: #606266;
     }
   }
 }
